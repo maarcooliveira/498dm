@@ -18,11 +18,9 @@ package com.squareup.moshi;
 import com.squareup.moshi.LinkedHashTreeMap.AvlBuilder;
 import com.squareup.moshi.LinkedHashTreeMap.AvlIterator;
 import com.squareup.moshi.LinkedHashTreeMap.Node;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
+
+import java.util.*;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -33,6 +31,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public final class LinkedHashTreeMapTest {
+  public LinkedHashTreeMap<String, String> helperBuildTree(){
+    LinkedHashTreeMap<String, String> map = new LinkedHashTreeMap<>();
+    map.put("a", "android");
+    map.put("c", "cola");
+    map.put("b", "bbq");
+    return map;
+  }
 
   /* Project tests - LinkedHashTreeMapTest - beginning */
   // t1
@@ -119,6 +124,157 @@ public final class LinkedHashTreeMapTest {
     n.right = c;
 
     assertEquals(c, n.last());
+  }
+
+
+  // Test m1
+  @Test
+  public void entrySetSize(){
+    LinkedHashTreeMap<String, String> map = new LinkedHashTreeMap<>();
+    Set<Map.Entry<String, String>> entries = map.entrySet();
+
+    assertEquals(0, entries.size());
+
+    map.put("a", "android");
+    entries = map.entrySet();
+    assertEquals(1, entries.size());
+
+    map.put("b", "bbq");
+    entries = map.entrySet();
+    assertEquals(2, entries.size());
+
+    map.put("c", "cola");
+    entries = map.entrySet();
+    assertEquals(3, entries.size());
+
+    map.remove("a");
+    entries = map.entrySet();
+    assertEquals(2, entries.size());
+  }
+
+
+  // Test m2
+  @Test
+  public void entryContainsElement(){
+    LinkedHashTreeMap<String, String> map = helperBuildTree();
+    Set<Map.Entry<String, String>> entries = map.entrySet();
+
+    assertFalse(entries.contains(null));
+
+    Map.Entry<String,String> entry = new AbstractMap.SimpleEntry<>("a", "android");
+    assertTrue(entries.contains(entry));
+  }
+
+  // Test m3
+  @Test
+  public void entryRemoveNullEntry(){
+    LinkedHashTreeMap<String, String> map = helperBuildTree();
+    Set<Map.Entry<String, String>> entries = map.entrySet();
+
+    assertFalse("Should not be able to remove entry `null`", entries.remove(null));
+  }
+
+
+  // Test m4
+  @Test
+  public void entryRemoveInvalidInstance(){
+    LinkedHashTreeMap<String, String> map = helperBuildTree();
+    Set<Map.Entry<String, String>> entries = map.entrySet();
+
+    assertFalse("Should not remove element when argument is not an instance of Entry", entries.remove(new Integer(1)));
+  }
+
+
+  // Test m5
+  @Test
+  public void entryRemoveValidEntry(){
+    LinkedHashTreeMap<String, String> map = helperBuildTree();
+    Set<Map.Entry<String, String>> entries = map.entrySet();
+
+    assertFalse("Should not be able to remove entry `null`", entries.remove(null));
+
+    Map.Entry<String,String> entry = new AbstractMap.SimpleEntry<>("a", "android");
+    assertTrue("Should be able to remove valid entry <`a`, `android`>", entries.remove(entry));
+
+    assertFalse("Should return null when not argument is not instance of Entry", entries.remove(new Integer(1)));
+  }
+
+
+  // Test m6
+  @Test
+  public void entryRemoveElement(){
+    LinkedHashTreeMap<String, String> map = helperBuildTree();
+    Set<Map.Entry<String, String>> entries = map.entrySet();
+
+    assertFalse("Should not be able to remove entry `null`", entries.remove(null));
+
+    Map.Entry<String,String> entry = new AbstractMap.SimpleEntry<>("a", "android");
+    assertTrue("Should be able to remove valid entry <\"a\", \"android\">", entries.remove(entry));
+
+    assertFalse("Should not be able to remove element after is was just removed", entries.remove(entry));
+  }
+
+
+  // Test m7
+  @Test
+  public void entrySetClear(){
+    LinkedHashTreeMap<String, String> map = helperBuildTree();
+    Set<Map.Entry<String, String>> entries = map.entrySet();
+
+    assertEquals("Check that initial starting tree is not empty, in this case it has three elements", 3, entries.size());
+
+    entries.clear();
+    assertEquals("Ensure that number of entries is zero after the tree is cleared", 0, entries.size());
+  }
+
+
+
+  // Test m11
+  @Test
+  public void keySetSize(){
+    LinkedHashTreeMap<String, String> map = new LinkedHashTreeMap<>();
+    LinkedHashTreeMap.KeySet keySet = (LinkedHashTreeMap.KeySet) map.keySet();
+
+    assertEquals(0, keySet.size());
+
+    map.put("a", "android");
+    keySet = (LinkedHashTreeMap.KeySet) map.keySet();
+    assertEquals(1, keySet.size());
+
+    map.put("b", "bbq");
+    keySet = (LinkedHashTreeMap.KeySet) map.keySet();
+    assertEquals(2, keySet.size());
+
+    map.put("c", "cola");
+    keySet = (LinkedHashTreeMap.KeySet) map.keySet();
+    assertEquals(3, keySet.size());
+  }
+
+
+  // Test m12
+  @Test
+  public void keySetContainsNull(){
+    LinkedHashTreeMap<String, String> map = helperBuildTree();
+    LinkedHashTreeMap.KeySet keySet = (LinkedHashTreeMap.KeySet) map.keySet();
+
+    assertFalse(keySet.contains(null));
+
+    map.put("null", "IShouldHaveWorkedOnThisSooner");
+    keySet = (LinkedHashTreeMap.KeySet) map.keySet();
+    assertFalse(keySet.contains(null));
+
+    map.put("", "values");
+    keySet = (LinkedHashTreeMap.KeySet) map.keySet();
+    assertTrue(keySet.contains(""));
+    assertFalse(keySet.contains(null));
+  }
+
+  // Test m13
+  @Test
+  public void mapEmptyKey(){
+    LinkedHashTreeMap<String, String> map = new LinkedHashTreeMap<>();
+    map.put("", "values");
+    assertTrue("Should be able to use empty String as Key", map.keySet().contains(""));
   }
   /* Project tests - LinkedHashTreeMapTest - end */
 
