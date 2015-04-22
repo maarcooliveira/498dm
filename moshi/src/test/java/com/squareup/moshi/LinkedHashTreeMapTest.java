@@ -96,6 +96,30 @@ public final class LinkedHashTreeMapTest {
     assertEquals(null, m1.findByEntry(n2));
     assertEquals(null, m2.findByEntry(n1));
   }
+
+  // t8
+  @Test public void getFirstNode() {
+    LinkedHashTreeMap<String, String> map = new LinkedHashTreeMap<>();
+    map.put("t", "test");
+    map.put("c", "child");
+    Node n = map.findByObject("t");
+    Node c = map.findByObject("c");
+    n.left = c;
+
+    assertEquals(c, n.first());
+  }
+
+  // t9
+  @Test public void getLastNode() {
+    LinkedHashTreeMap<String, String> map = new LinkedHashTreeMap<>();
+    map.put("t", "test");
+    map.put("c", "child");
+    Node n = map.findByObject("t");
+    Node c = map.findByObject("c");
+    n.right = c;
+
+    assertEquals(c, n.last());
+  }
   /* Project tests - LinkedHashTreeMapTest - end */
 
   @Test public void iterationOrder() {
