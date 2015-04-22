@@ -1,17 +1,13 @@
 Moshi
 =====
 
-A modern JSON library for Android and Java.
+Moshi is a modern JSON library for Android and Java, being developed by [Square][square]
 
 
-
-Download
+What is this
 --------
 
-**Moshi is currently under development.** The API is not stable and neither is the feature set. It should not be used.
-
-Snapshots of the development version are available in [Sonatype's `snapshots` repository][snap].
-
+This repo is part of a Software Testing project. The idea is to modify original Moshi tests, add new tests and remove unnecessary ones to improve code coverage, try to find and report bugs.
 
 
 License
@@ -32,4 +28,4 @@ License
     limitations under the License.
 
 
- [snap]: https://oss.sonatype.org/content/repositories/snapshots/
+ [square]: https://github.com/square/moshi
