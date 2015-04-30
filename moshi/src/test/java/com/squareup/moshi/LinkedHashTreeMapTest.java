@@ -22,6 +22,8 @@ import com.squareup.moshi.LinkedHashTreeMap.Node;
 import java.util.*;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -276,6 +278,43 @@ public final class LinkedHashTreeMapTest {
     map.put("", "values");
     assertTrue("Should be able to use empty String as Key", map.keySet().contains(""));
   }
+
+
+  // Test m14
+  // Based off "https://github.com/junit-team/junit/wiki/Parameterized-tests"
+  @RunWith(Parameterized.class)
+  public class ParamaterizedMapTesting {
+    @Parameterized.Parameters
+    public final Collection<Object[]> data() {
+      return Arrays.asList(new Object[][] {
+              { "a", "apple"}, { "b", "banana"}, { "c", "carrot"}
+      });
+    }
+
+    private String k;
+
+    private String v;
+
+    private boolean expected;
+
+    public ParamaterizedMapTesting(String k, String v, boolean expected) {
+      this.k = k;
+      this.k = v;
+      this.expected = expected;
+    }
+
+    @Test
+    public void test() {
+      LinkedHashTreeMap<String, String> map = new LinkedHashTreeMap<>();
+      map.put(k,v);
+      assertTrue(map.keySet().contains(k));
+      Map.Entry<String,String> entry = new AbstractMap.SimpleEntry<>(k, v);
+      assertTrue(map.entrySet().contains(entry));
+    }
+
+  }
+
+
   /* Project tests - LinkedHashTreeMapTest - end */
 
   @Test public void iterationOrder() {

@@ -1,8 +1,15 @@
 package com.squareup.moshi;
 
 import org.junit.Test;
+
+import static com.squareup.moshi.TestUtil.newReader;
 import static org.junit.Assert.*;
 import com.squareup.moshi.LinkedHashTreeMap.Node;
+
+import java.io.IOException;
+import java.util.AbstractMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Marco Andre De Oliveira <mdeoliv2@illinois.edu>
@@ -34,5 +41,38 @@ public final class MP5cTest {
     }
 
 
+    // Test m3
+    @Test
+    public void findByEntry(){
+        LinkedHashTreeMap<String, String> map = new LinkedHashTreeMap<>();
+        map.put("a", "android");
+        map.put("c", "cola");
+        map.put("b", "bbq");
 
+        Set<Map.Entry<String, String>> entries = map.entrySet();
+
+        Map.Entry<String,String> entry = new AbstractMap.SimpleEntry<>("a", "differentValue");
+        assertNotEquals(map.findByEntry(entry), map.findByEntryMutant(entry));
+    }
+
+    // Test m4
+    @Test public void readBooleanArray() throws IOException {
+        JsonReader reader = newReader("[true, false]");
+        reader.beginArray();
+        assertEquals(reader.nextBoolean(), reader.nextBooleanMutant());
+        reader.endArray();
+    }
+
+    // Test m5
+    @Test public void readNextInt() throws IOException {
+        JsonReader reader = newReader("{\"a\":123,\"b\":-123}");
+        reader.beginObject();
+        reader.nextName();
+        int value = reader.nextInt();
+        reader.nextName();
+        int mutantValue = reader.nextIntMutant();
+
+        reader.endObject();
+        assertEquals(value, mutantValue);
+    }
 }

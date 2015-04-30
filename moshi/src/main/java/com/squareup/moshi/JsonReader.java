@@ -832,6 +832,25 @@ public final class JsonReader implements Closeable {
         + " at path " + getPath());
   }
 
+  // mutant m4
+  public boolean nextBooleanMutant() throws IOException {
+    int p = peeked;
+    if (p == PEEKED_NONE) {
+      p = doPeek();
+    }
+    if (p != PEEKED_TRUE) {
+      peeked = PEEKED_NONE;
+      pathIndices[stackSize - 1]++;
+      return true;
+    } else if (p == PEEKED_FALSE) {
+      peeked = PEEKED_NONE;
+      pathIndices[stackSize - 1]++;
+      return false;
+    }
+    throw new IllegalStateException("Expected a boolean but was " + peek()
+            + " at path " + getPath());
+  }
+
   /**
    * Consumes the next token from the JSON stream and asserts that it is a
    * literal null. Returns null.
@@ -1070,6 +1089,58 @@ public final class JsonReader implements Closeable {
     if (result != asDouble) { // Make sure no precision was lost casting to 'int'.
       throw new NumberFormatException("Expected an int but was " + peekedString
           + " at path " + getPath());
+    }
+    peekedString = null;
+    peeked = PEEKED_NONE;
+    pathIndices[stackSize - 1]++;
+    return result;
+  }
+
+  // Test m5
+  public int nextIntMutant() throws IOException {
+    int p = peeked;
+    if (p == PEEKED_NONE) {
+      p = doPeek();
+    }
+
+    int result;
+    if (p == PEEKED_LONG) {
+      result = (int) peekedLong;
+      if (peekedLong != result) { // Make sure no precision was lost casting to 'int'.
+        throw new NumberFormatException("Expected an int but was " + peekedLong
+                + " at path " + getPath());
+      }
+      peeked = PEEKED_NONE;
+      pathIndices[stackSize - 1]++;
+// Mutant is here
+      return Math.abs(result);
+    }
+
+    if (p == PEEKED_NUMBER) {
+      peekedString = buffer.readUtf8(peekedNumberLength);
+    } else if (p == PEEKED_DOUBLE_QUOTED || p == PEEKED_SINGLE_QUOTED) {
+      peekedString = p == PEEKED_DOUBLE_QUOTED
+              ? nextQuotedValue(DOUBLE_QUOTE_OR_SLASH)
+              : nextQuotedValue(SINGLE_QUOTE_OR_SLASH);
+      try {
+        result = Integer.parseInt(peekedString);
+        peeked = PEEKED_NONE;
+        pathIndices[stackSize - 1]++;
+        return result;
+      } catch (NumberFormatException ignored) {
+        // Fall back to parse as a double below.
+      }
+    } else {
+      throw new IllegalStateException("Expected an int but was " + peek()
+              + " at path " + getPath());
+    }
+
+    peeked = PEEKED_BUFFERED;
+    double asDouble = Double.parseDouble(peekedString); // don't catch this NumberFormatException.
+    result = (int) asDouble;
+    if (result != asDouble) { // Make sure no precision was lost casting to 'int'.
+      throw new NumberFormatException("Expected an int but was " + peekedString
+              + " at path " + getPath());
     }
     peekedString = null;
     peeked = PEEKED_NONE;

@@ -228,6 +228,13 @@ final class LinkedHashTreeMap<K, V> extends AbstractMap<K, V> implements Seriali
     return valuesEqual ? mine : null;
   }
 
+  // mutant m3
+  Node<K, V> findByEntryMutant(Entry<?, ?> entry) {
+    Node<K, V> mine = findByObject(entry.getKey());
+    boolean valuesEqual = mine != null || equal(mine.value, entry.getValue());
+    return valuesEqual ? mine : null;
+  }
+
   private boolean equal(Object a, Object b) {
     return a == b || (a != null && a.equals(b));
   }
@@ -243,6 +250,7 @@ final class LinkedHashTreeMap<K, V> extends AbstractMap<K, V> implements Seriali
     h ^= (h >>> 20) ^ (h >>> 12);
     return h ^ (h >>> 7) ^ (h >>> 4);
   }
+
 
   /**
    * Removes {@code node} from this tree, rearranging the tree's structure as
