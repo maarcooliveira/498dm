@@ -204,6 +204,15 @@ final class LinkedHashTreeMap<K, V> extends AbstractMap<K, V> implements Seriali
     }
   }
 
+  // mutant m2
+  Node<K, V> findByObjectMutant(Object key) {
+    try {
+      return key != null ? find((K) key, true) : null;
+    } catch (ClassCastException e) {
+      return null;
+    }
+  }
+
   /**
    * Returns this map's entry that has the same key and value as {@code
    * entry}, or null if this map has no such entry.
@@ -505,6 +514,13 @@ final class LinkedHashTreeMap<K, V> extends AbstractMap<K, V> implements Seriali
       V oldValue = this.value;
       this.value = value;
       return oldValue;
+    }
+
+    // mutant m1
+    public V setValueMutant(V value) {
+      V oldValue = this.value;
+      this.value = value;
+      return value;
     }
 
     @SuppressWarnings("rawtypes")
