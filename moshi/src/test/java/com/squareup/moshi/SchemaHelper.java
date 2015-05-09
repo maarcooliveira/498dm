@@ -134,10 +134,11 @@ public class SchemaHelper {
 
         @Override
         public boolean equals(Object o) {
+            System.out.println(data);
             if (o instanceof TestString)
-                return ((TestString) o).data == data;
+                return ((TestString) o).data.equals(data);
             else if (o instanceof String)
-                return ((String) o).equals(data);
+                return o.equals(data);
             return false;
         }
 
@@ -179,6 +180,44 @@ public class SchemaHelper {
     }
 
 
+
+    static class TestNullAdapter extends JsonAdapter<TestObject> {
+        @Override
+        public TestObject fromJson(JsonReader reader) throws IOException {
+            String description = "placeholder";
+            boolean valid = false;
+            Object data = null;
+
+            reader.beginObject();
+            while (reader.hasNext()) {
+                String name = reader.nextName();
+                if (name.equals("description")) {
+                    description = reader.nextString();
+                } else if (name.equals("data")) {
+                    data = reader.nextNull();
+                } else if (name.equals("valid")) {
+                    valid = reader.nextBoolean();
+                } else {
+                    reader.skipValue();
+                }
+            }
+            reader.endObject();
+            return new TestObject(description, data, valid);
+        }
+
+        @Override
+        public void toJson(JsonWriter writer, TestObject value) throws IOException {
+            writer.beginObject();
+            writer.name("description").value(value.description);
+            writer.name("data").value(value.data.toString()); // Check
+            writer.name("valid").value(value.valid);
+            writer.endObject();
+        }
+    }
+
+
+
+
     static class TestObject {
         final String description;
         final Object data;
@@ -193,112 +232,13 @@ public class SchemaHelper {
         @Override
         public boolean equals(Object o) {
             if (o instanceof TestObject)
-                return ((TestString) o).data == data;
+                return ((TestObject) o).data == data;
             else if (o instanceof String)
                 return o.equals(data);
             return false;
         }
-
-
     }
 
-//    static class TestObjectAdapter extends JsonAdapter<TestObject> {
-//        @Override
-//        public TestObject fromJson(JsonReader reader) throws IOException {
-//            String description = "placeholder";
-//            boolean valid = false;
-//            Object data = null;
-//
-//            reader.beginObject();
-//            while (reader.hasNext()) {
-//                String name = reader.nextName();
-//                if (name.equals("description")) {
-//                    description = reader.nextString();
-//                } else if (name.equals("data")) {
-//                    try{
-//                        data = reader.nextInt();
-//                        continue;
-//                    }catch(Exception e){}
-//                    try{
-//                        data = reader.nextBoolean();
-//                        continue;
-//                    }catch(Exception e){}
-//                    try{
-//                        data = reader.nextDouble();
-//                        continue;
-//                    }catch(Exception e){}
-//                    try{
-//                        data = reader.nextLong();
-//                        continue;
-//                    }catch(Exception e){}
-//                    try{
-//                        data = reader.nextString();
-//                        continue;
-//                    }catch(Exception e){}
-//
-//                    try{
-//                        reader.beginObject();
-//                        data = new
-//                        while (reader.hasNext()) {
-//                            String innerName = reader.nextName();
-//                            if (innerName.equals("description")) {
-//                                description = reader.nextString();
-//                            } else if (innerName.equals("data")) {
-//                                try{
-//                                    data = reader.nextInt();
-//                                    continue;
-//                                }catch(Exception e){}
-//                                try{
-//                                    data = reader.nextBoolean();
-//                                    continue;
-//                                }catch(Exception e){}
-//                                try{
-//                                    data = reader.nextDouble();
-//                                    continue;
-//                                }catch(Exception e){}
-//                                try{
-//                                    data = reader.nextLong();
-//                                    continue;
-//                                }catch(Exception e){}
-//                                try{
-//                                    data = reader.nextString();
-//                                    continue;
-//                                }catch(Exception e){}
-//
-//                                try{
-//                                    reader.beginObject();
-//                                }
-//
-//                            } else if (name.equals("valid")) {
-//                                valid = reader.nextBoolean();
-//                            } else {
-//                                reader.skipValue();
-//                            }
-//
-//
-//
-//
-//
-//                    }
-//
-//                } else if (name.equals("valid")) {
-//                    valid = reader.nextBoolean();
-//                } else {
-//                    reader.skipValue();
-//                }
-//            }
-//            reader.endObject();
-//            return new TestObject(description, data, valid);
-//        }
-//
-//        @Override
-//        public void toJson(JsonWriter writer, TestObject value) throws IOException {
-//            writer.beginObject();
-//            writer.name("description").value(value.description);
-//            writer.name("data").value(value.data.toString()); // Check
-//            writer.name("valid").value(value.valid);
-//            writer.endObject();
-//        }
-//    }
+
 
 }
