@@ -20,13 +20,8 @@ import java.lang.annotation.Retention;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
+
 import org.junit.Test;
 
 import static com.squareup.moshi.TestUtil.newReader;
@@ -35,6 +30,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 public final class MoshiTest {
+
+  // Test n2
+  @Test (expected = IllegalArgumentException.class)
+  public void dateAdapter() {
+    Moshi moshi = new Moshi.Builder().build();
+    JsonAdapter<Date> adapter = moshi.adapter(Date.class).lenient();
+  }
 
   @Test public void booleanAdapter() throws Exception {
     Moshi moshi = new Moshi.Builder().build();

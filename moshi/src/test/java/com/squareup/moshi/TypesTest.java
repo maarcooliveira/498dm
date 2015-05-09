@@ -15,19 +15,25 @@
  */
 package com.squareup.moshi;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
+
+import com.sun.org.apache.xalan.internal.xsltc.util.IntegerArray;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public final class TypesTest {
+
+  // Test n1
+  @Test (expected = NullPointerException.class)
+  public void newParameterizedTypeWithNullOwner() throws Exception {
+    Type type = Types.newParameterizedTypeWithOwner(null, List.class, A.class);
+  }
 
   @Test public void newParameterizedType() throws Exception {
     // List<A>. List is a top-level class.
