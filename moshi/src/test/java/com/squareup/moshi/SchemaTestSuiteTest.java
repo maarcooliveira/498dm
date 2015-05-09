@@ -37,6 +37,20 @@ public final class SchemaTestSuiteTest {
     final String booleanTest6 = "{\"description\":\"a boolean is not a boolean\",\"data\":true,\"valid\":true}";
     final String booleanTest7 = "{\"description\":\"null is not a boolean\",\"data\":null,\"valid\":false}";
 
+    final String stringTest1 = "{\"description\":\"1 is not a string\",\"data\":1,\"valid\":false}";
+    final String stringTest2 = "{\"description\":\"a float is not a string\",\"data\":1.1,\"valid\":false}";
+    final String stringTest3 = "{\"description\":\"a string is a string\",\"data\":\"foo\",\"valid\":true}";
+    final String stringTest4 = "{\"description\":\"an object is not a string\",\"data\":{},\"valid\":false}";
+    final String stringTest5 = "{\"description\":\"an array is not a string\",\"data\":[],\"valid\":false}";
+    final String stringTest6 = "{\"description\":\"a boolean is not a string\",\"data\":true,\"valid\":false}";
+    final String stringTest7 = "{\"description\":\"null is not a string\",\"data\":null,\"valid\":false}";
+
+    final String objectTest1 = "{\"description\":\"an integer is not an array\",\"data\":1,\"valid\":false}";
+    final String objectTest2 = "{\"description\":\"a float is not an array\",\"data\":1.1,\"valid\":false}";
+    final String objectTest3 = "{\"description\":\"a string is not an array\",\"data\":\"foo\",\"valid\":false}";
+    final String objectTest4 = "{\"description\":\"an object is not an array\",\"data\":{},\"valid\":false}";
+    final String objectTest5 = "{\"description\":\"an array is not an array\",\"data\":[],\"valid\":true}";
+
     @Test
     public void test1() throws Exception {
         Moshi moshi = new Moshi.Builder()
@@ -50,7 +64,7 @@ public final class SchemaTestSuiteTest {
     }
 
     @Test
-    public void test2() throws Exception {
+    public void fromJsonIntegerTest() throws Exception {
         Moshi moshi = new Moshi.Builder()
                 .add(SchemaHelper.TestInteger.class, new SchemaHelper.TestIntegerAdapter())
                 .build();
@@ -99,8 +113,6 @@ public final class SchemaTestSuiteTest {
                 .build();
 
         JsonAdapter<SchemaHelper.TestBoolean> jsonAdapter = moshi.adapter(SchemaHelper.TestBoolean.class);
-//        assertThat(jsonAdapter.fromJson(booleanTest1))
-//                .isEqualTo(1);
 
         try {
             jsonAdapter.fromJson(booleanTest1);
@@ -135,9 +147,84 @@ public final class SchemaTestSuiteTest {
             jsonAdapter.fromJson(booleanTest7);
             fail();
         } catch (IllegalStateException expected){}
-
-
     }
+
+
+
+    @Test
+    public void fromJsonStringTest() throws Exception {
+        Moshi moshi = new Moshi.Builder()
+                .add(SchemaHelper.TestString.class, new SchemaHelper.TestStringAdapter())
+                .build();
+
+        JsonAdapter<SchemaHelper.TestString> jsonAdapter = moshi.adapter(SchemaHelper.TestString.class);
+
+        try {
+            jsonAdapter.fromJson(stringTest1);
+            fail();
+        } catch (AssertionError expected){}
+
+        try {
+            jsonAdapter.fromJson(stringTest2);
+            fail();
+        } catch (AssertionError expected){}
+
+        assertEquals(jsonAdapter.fromJson(stringTest3), "foo");
+
+
+        try {
+            jsonAdapter.fromJson(stringTest4);
+            fail();
+        } catch (IllegalStateException expected){}
+
+        try {
+            jsonAdapter.fromJson(stringTest5);
+            fail();
+        } catch (IllegalStateException expected){}
+
+
+        try {
+            jsonAdapter.fromJson(stringTest6);
+            fail();
+        } catch (IllegalStateException expected){}
+
+        try {
+            jsonAdapter.fromJson(stringTest7);
+            fail();
+        } catch (IllegalStateException expected){}
+    }
+
+
+/*
+    @Test
+    public void fromJsonObjectTest() throws Exception {
+        Moshi moshi = new Moshi.Builder()
+                .add(SchemaHelper.TestObject.class, new SchemaHelper.TestObjectAdapter())
+                .build();
+
+        JsonAdapter<SchemaHelper.TestObject> jsonAdapter = moshi.adapter(SchemaHelper.TestObject.class);
+
+        try {
+            jsonAdapter.fromJson(objectTest1);
+            fail();
+        } catch (AssertionError expected){}
+
+        try {
+            jsonAdapter.fromJson(objectTest2);
+            fail();
+        } catch (AssertionError expected){}
+
+        try {
+            jsonAdapter.fromJson(objectTest3);
+            fail();
+        } catch (AssertionError expected){}
+
+        try {
+            jsonAdapter.fromJson(objectTest4);
+            fail();
+        } catch (AssertionError expected){}
+    }
+*/
 
 
     @Retention(RUNTIME)
